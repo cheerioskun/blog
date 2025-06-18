@@ -1,0 +1,55 @@
+baseURL = 'https://example.org/'
+languageCode = 'en-us'
+title = "hemant's blog"
+theme = 'typo'
+
+[taxonomies]
+tag = 'tags'
+
+[params]
+# Meta description
+description = "Thoughts and such"
+
+# Appearance settings
+theme = 'light'
+colorPalette = 'default'
+hideHeader = false  
+
+# Collection to display on home
+homeCollectionTitle = 'Posts'
+homeCollection = 'posts'
+
+# Lists parameters
+paginationSize = 100
+listSummaries = true
+listDateFormat = '2 Jan 2006'
+
+
+# Social icons
+[[params.social]]
+name = "linkedin"
+url = "https://www.linkedin.com/in/hemant-pandey-hx/"
+
+
+[[params.social]]
+name = "github"
+url = "https://github.com/cheerioskun"
+
+# Main menu pages
+[[params.menu]]
+name = "home"
+url = "/"
+
+[[params.menu]]
+name = "posts"
+url = "/posts"
+
+[[params.menu]]
+name = "about"
+url = "/about"
+
+# Syntax highlight on code blocks
+[markup]
+[markup.highlight]
+style = 'algol'
+

