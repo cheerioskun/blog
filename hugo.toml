@@ -36,9 +36,6 @@ name = "github"
 url = "https://github.com/cheerioskun"
 
 # Main menu pages
-[[params.menu]]
-name = "home"
-url = "/"
 
 [[params.menu]]
 name = "posts"
@@ -47,6 +44,10 @@ url = "/posts"
 [[params.menu]]
 name = "about"
 url = "/about"
+
+[[params.menu]]
+name = "Library"
+url = "/library"
 
 # Syntax highlight on code blocks
 [markup]
