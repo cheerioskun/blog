@@ -1,4 +1,4 @@
-baseURL = 'https://example.org/'
+baseURL = 'https://phemantics.xyz/'
 languageCode = 'en-us'
 title = "hemant's blog"
 theme = 'typo'
@@ -6,14 +6,18 @@ theme = 'typo'
 [taxonomies]
 tag = 'tags'
 
+[params.breadcrumbs]
+enabled = false
+
+
 [params]
 # Meta description
 description = "Thoughts and such"
 
 # Appearance settings
 theme = 'light'
-colorPalette = 'default'
 hideHeader = false  
+colorPalette = 'default'
 
 # Collection to display on home
 homeCollectionTitle = 'Posts'
@@ -52,5 +56,5 @@ url = "/library"
 # Syntax highlight on code blocks
 [markup]
 [markup.highlight]
-style = 'algol'
+style = 'colorful'
 

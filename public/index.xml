@@ -2,24 +2,31 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Home on hemant&#39;s blog</title>
-    <link>https://example.org/</link>
+    <link>http://localhost:1313/</link>
     <description>Recent content in Home on hemant&#39;s blog</description>
     <generator>Hugo</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 18 Jun 2025 00:00:00 +0000</lastBuildDate>
-    <atom:link href="https://example.org/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 19 Jun 2025 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Library</title>
+      <link>http://localhost:1313/library/</link>
+      <pubDate>Thu, 19 Jun 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/library/</guid>
+      <description>Essays, Articles and Fiction</description>
+    </item>
     <item>
       <title>About</title>
-      <link>https://example.org/about/</link>
+      <link>http://localhost:1313/about/</link>
       <pubDate>Wed, 18 Jun 2025 00:00:00 +0000</pubDate>
-      <guid>https://example.org/about/</guid>
+      <guid>http://localhost:1313/about/</guid>
       <description>&lt;p&gt;I&amp;rsquo;m a software engineer in Bangalore. Prospective Fall &amp;lsquo;25 MSCS student at Georgia Tech in the systems specialization.&lt;/p&gt;&#xA;&lt;p&gt;I love learning, lifting and coldbrew. More about me in my RESUME.&lt;/p&gt;&#xA;&lt;h2 class=&#34;heading&#34; id=&#34;on-my-plate&#34;&gt;&#xA;  On My Plate&#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#on-my-plate&#34;&gt;#&lt;/a&gt;&#xA;&lt;/h2&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;Retrofitting an observability stack into a years old codebase&lt;/li&gt;&#xA;&lt;li&gt;Brushing up everything for college&lt;/li&gt;&#xA;&lt;li&gt;JLPT N2 (success chance: 17%)&lt;/li&gt;&#xA;&lt;/ul&gt;</description>
     </item>
     <item>
       <title>Learning about format string vulnerabilities</title>
-      <link>https://example.org/posts/nuformat-1/</link>
+      <link>http://localhost:1313/posts/nuformat-1/</link>
       <pubDate>Wed, 18 Jun 2025 00:00:00 +0000</pubDate>
-      <guid>https://example.org/posts/nuformat-1/</guid>
+      <guid>http://localhost:1313/posts/nuformat-1/</guid>
       <description>Sometime last year, I took part in the company hackathon and came across some nice questions which were fun to solve. This post is about learning how to exploit unsafe uses of printf in C code.</description>
     </item>
   </channel>

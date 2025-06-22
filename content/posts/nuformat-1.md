@@ -5,9 +5,7 @@ summary: "Sometime last year, I took part in the company hackathon and came acro
 draft: false
 ---
 
-Sometime last year, I took part in the company hackathon and came across some nice questions which were fun to solve. This post is about learning how to exploit unsafe uses of printf in C code.
-
-The problem with a C source file and a binary called nuformat1. Inspecting the source code:
+The problem gives us a C source file and a binary called nuformat1. Inspecting the source code:
 
 ```c
 char flag[48];
@@ -62,7 +60,8 @@ for i in range(1, 30, 3):
 
 The 'AAA' string is a good way to mark your own string. It shows up as 0x41 in hex.
 
-And this is what we get. Look at those 41s!
+![screenshot of the output](/nuformat1-ss-1.png "And this is what we get. Look at those 41s!")
+
 It looks like `%8$p` prints our string! (so does %9$p)
 
 This makes the question interesting, because we have an area of memory that we have full control over, and KNOW where it is. If I were to now put the location of the global flag variable in %8 and do %$s then I would be able to print what is in flag variable!
