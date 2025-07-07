@@ -2,7 +2,8 @@
 title: "The Exam I Might Fail (Again)"
 date: 2025-07-04
 summary: "Giving this test 8 years after the first attempt, at a different place in life"
-draft: true
+draft: false
+tags: language, hobbies
 ---
 
 ## Introduction
