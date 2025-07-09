@@ -1,6 +1,6 @@
 baseURL = 'https://phemantics.xyz/'
 languageCode = 'en-us'
-title = "hemant's blog"
+title = "Name of the Blog 🍃"
 theme = 'typo'
 
 [taxonomies]
