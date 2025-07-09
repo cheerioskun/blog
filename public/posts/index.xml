@@ -1,13 +1,27 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Posts on hemant&#39;s blog</title>
+    <title>Posts on Name of the Blog 🍃</title>
     <link>http://localhost:1313/posts/</link>
-    <description>Recent content in Posts on hemant&#39;s blog</description>
+    <description>Recent content in Posts on Name of the Blog 🍃</description>
     <generator>Hugo</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 18 Jun 2025 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 07 Jul 2025 00:00:00 +0000</lastBuildDate>
     <atom:link href="http://localhost:1313/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Shy Code</title>
+      <link>http://localhost:1313/posts/extroverted-functions/</link>
+      <pubDate>Mon, 07 Jul 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/extroverted-functions/</guid>
+      <description>An antipattern I see often in intertwined code</description>
+    </item>
+    <item>
+      <title>The Exam I Might Fail (Again)</title>
+      <link>http://localhost:1313/posts/jlpt-n2/</link>
+      <pubDate>Fri, 04 Jul 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/jlpt-n2/</guid>
+      <description>Giving this test 8 years after the first attempt, at a different place in life</description>
+    </item>
     <item>
       <title>Learning about format string vulnerabilities</title>
       <link>http://localhost:1313/posts/nuformat-1/</link>
